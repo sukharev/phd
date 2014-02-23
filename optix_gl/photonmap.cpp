@@ -3278,7 +3278,7 @@ void ProgressivePhotonScene::createTestGeometryEarthAtm(optix::Aabb& bbox)
 	// Sphere geometry.
 	//gis.push_back( createCone(blue , Rg, Rg));
 	//gis_ground.push_back( createSphere(brown , Rg));
-	//gis.push_back( createVolSphere(white, Rt, Rg));
+	gis.push_back( createVolSphere(white, Rt, Rg));
 	//gis.push_back( createSphere(green , (Rg+(Rt-Rg)*4/(RES_R/4)), true));
 
 
