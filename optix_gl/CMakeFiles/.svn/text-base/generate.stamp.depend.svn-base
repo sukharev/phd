@@ -1,0 +1,8 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/NVIDIA Corporation/OptiX SDK 3.0.1/SDK/isgShadows/CMakeLists.txt
+C:/NVIDIA/OptiX SDK 1.0.0/SDK/build/isgShadows/CMakeFiles/isgShadows_generated_opaque_isg.cu.ptx.depend
+C:/Program Files/NVIDIA Corporation/OptiX SDK 3.0.1/SDK/CMake/FindCUDA/run_nvcc.cmake
+C:/NVIDIA/OptiX SDK 1.0.0/SDK/build/isgShadows/CMakeFiles/isgShadows_generated_shadow_request_isg.cu.ptx.depend
+C:/Program Files/NVIDIA Corporation/OptiX SDK 3.0.1/SDK/CMake/FindCUDA/run_nvcc.cmake
+C:/NVIDIA/OptiX SDK 1.0.0/SDK/build/isgShadows/CMakeFiles/isgShadows_generated_triangle_mesh_fat.cu.ptx.depend
+C:/Program Files/NVIDIA Corporation/OptiX SDK 3.0.1/SDK/CMake/FindCUDA/run_nvcc.cmake

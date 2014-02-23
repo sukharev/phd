@@ -1,0 +1,100 @@
+	.version 1.4
+	.target sm_10, map_f64_to_f32
+	// compiled with C:/CUDA/bin/../open64/lib//be.exe
+	// nvopencc 4.0 built on 2011-05-13
+
+	//-----------------------------------------------------------
+	// Compiling C:/Users/Jeff/AppData/Local/Temp/tmpxft_00001778_00000000-11_opaque_isg.cpp3.i (C:/Users/Jeff/AppData/Local/Temp/ccBI#.a04028)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:32
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"C:/Users/Jeff/AppData/Local/Temp/tmpxft_00001778_00000000-10_opaque_isg.cudafe2.gpu"
+	.file	2	"C:/SVN/Dev/optix_gl/opaque_isg.cu"
+	.file	3	"c:\program files\nvidia corporation\optix sdk 3.0.1\include\internal\optix_defines.h"
+	.file	4	"C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\INCLUDE\crtdefs.h"
+	.file	5	"C:/CUDA/include\crt/device_runtime.h"
+	.file	6	"C:/CUDA/include\host_defines.h"
+	.file	7	"C:/CUDA/include\builtin_types.h"
+	.file	8	"c:\cuda\include\device_types.h"
+	.file	9	"c:\cuda\include\driver_types.h"
+	.file	10	"c:\cuda\include\surface_types.h"
+	.file	11	"c:\cuda\include\texture_types.h"
+	.file	12	"c:\cuda\include\vector_types.h"
+	.file	13	"c:\cuda\include\builtin_types.h"
+	.file	14	"c:\cuda\include\host_defines.h"
+	.file	15	"C:/CUDA/include\device_launch_parameters.h"
+	.file	16	"c:\cuda\include\crt\storage_class.h"
+	.file	17	"C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\INCLUDE\time.h"
+	.file	18	"c:\program files\nvidia corporation\optix sdk 3.0.1\include\internal/optix_internal.h"
+	.file	19	"c:\program files\nvidia corporation\optix sdk 3.0.1\include\optix_device.h"
+	.file	20	"C:/CUDA/include\common_functions.h"
+	.file	21	"c:\cuda\include\math_functions.h"
+	.file	22	"c:\cuda\include\math_constants.h"
+	.file	23	"c:\cuda\include\device_functions.h"
+	.file	24	"c:\cuda\include\sm_11_atomic_functions.h"
+	.file	25	"c:\cuda\include\sm_12_atomic_functions.h"
+	.file	26	"c:\cuda\include\sm_13_double_functions.h"
+	.file	27	"c:\cuda\include\sm_20_atomic_functions.h"
+	.file	28	"c:\cuda\include\sm_20_intrinsics.h"
+	.file	29	"c:\cuda\include\surface_functions.h"
+	.file	30	"c:\cuda\include\texture_fetch_functions.h"
+	.file	31	"c:\cuda\include\math_functions_dbl_ptx1.h"
+
+	.global .align 4 .b8 prd_shadow[4];
+	.global .f32 t_hit;
+
+	.entry _Z14any_hit_shadowv
+	{
+	.reg .f32 %f<3>;
+	.loc	2	34	0
+$LDWbegin__Z14any_hit_shadowv:
+	.loc	2	36	0
+	ld.global.f32 	%f1, [t_hit];
+	st.global.f32 	[prd_shadow+0], %f1;
+	.loc	18	211	0
+	call _rt_terminate_ray, ();
+	.loc	2	39	0
+	exit;
+$LDWend__Z14any_hit_shadowv:
+	} // _Z14any_hit_shadowv
+	.global .u32 _ZN21rti_internal_register20reg_bitness_detectorE;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail0E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail1E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail2E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail3E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail4E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail5E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail6E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail7E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail8E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail9E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail0E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail1E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail2E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail3E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail4E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail5E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail6E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail7E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail8E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail9E;
+	.global .u32 _ZN21rti_internal_register14reg_rayIndex_xE;
+	.global .u32 _ZN21rti_internal_register14reg_rayIndex_yE;
+	.global .u32 _ZN21rti_internal_register14reg_rayIndex_zE;
+	.global .align 4 .b8 _ZN21rti_internal_typeinfo10prd_shadowE[8] = {82,97,121,0,4,0,0,0};
+	.global .align 4 .b8 _ZN21rti_internal_typeinfo5t_hitE[8] = {82,97,121,0,4,0,0,0};
+	.global .align 1 .b8 _ZN21rti_internal_typename10prd_shadowE[18] = {0x50,0x65,0x72,0x52,0x61,0x79,0x44,0x61,0x74,0x61,0x5f,0x73,0x68,0x61,0x64,0x6f,0x77,0x0};
+	.global .align 1 .b8 _ZN21rti_internal_typename5t_hitE[6] = {0x66,0x6c,0x6f,0x61,0x74,0x0};
+	.global .align 1 .b8 _ZN21rti_internal_semantic10prd_shadowE[10] = {0x72,0x74,0x50,0x61,0x79,0x6c,0x6f,0x61,0x64,0x0};
+	.global .align 1 .b8 _ZN21rti_internal_semantic5t_hitE[23] = {0x72,0x74,0x49,0x6e,0x74,0x65,0x72,0x73,0x65,0x63,0x74,0x69,0x6f,0x6e,0x44,0x69,0x73,0x74,0x61,0x6e,0x63,0x65,0x0};
+	.global .align 1 .b8 _ZN23rti_internal_annotation10prd_shadowE[1] = {0x0};
+	.global .align 1 .b8 _ZN23rti_internal_annotation5t_hitE[1] = {0x0};
+

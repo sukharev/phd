@@ -1,0 +1,1083 @@
+	.version 1.4
+	.target sm_10, map_f64_to_f32
+	// compiled with C:/CUDA/bin/../open64/lib//be.exe
+	// nvopencc 4.0 built on 2011-05-13
+
+	//-----------------------------------------------------------
+	// Compiling C:/Users/Sukharev/AppData/Local/Temp/tmpxft_000019f8_00000000-11_sphere.cpp3.i (C:/Users/Sukharev/AppData/Local/Temp/ccBI#.a00320)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:32
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"C:/Users/Sukharev/AppData/Local/Temp/tmpxft_000019f8_00000000-10_sphere.cudafe2.gpu"
+	.file	2	"c:\program files (x86)\nvidia corporation\optix sdk 2.1.0\include\internal/optix_datatypes.h"
+	.file	3	"c:\program files (x86)\nvidia corporation\optix sdk 2.1.0\include\optixu/optixu_aabb_namespace.h"
+	.file	4	"c:\program files (x86)\nvidia corporation\optix sdk 2.1.0\include\internal\optix_defines.h"
+	.file	5	"c:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\INCLUDE\crtdefs.h"
+	.file	6	"C:/CUDA/include\crt/device_runtime.h"
+	.file	7	"C:/CUDA/include\host_defines.h"
+	.file	8	"C:/CUDA/include\builtin_types.h"
+	.file	9	"c:\cuda\include\device_types.h"
+	.file	10	"c:\cuda\include\driver_types.h"
+	.file	11	"c:\cuda\include\surface_types.h"
+	.file	12	"c:\cuda\include\texture_types.h"
+	.file	13	"c:\cuda\include\vector_types.h"
+	.file	14	"c:\cuda\include\builtin_types.h"
+	.file	15	"c:\cuda\include\host_defines.h"
+	.file	16	"C:/CUDA/include\device_launch_parameters.h"
+	.file	17	"c:\cuda\include\crt\storage_class.h"
+	.file	18	"c:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\INCLUDE\time.h"
+	.file	19	"c:\program files (x86)\nvidia corporation\optix sdk 2.1.0\include\optix_device.h"
+	.file	20	"C:/SVN/Dev/optix_gl/sphere.cu"
+	.file	21	"c:\program files (x86)\nvidia corporation\optix sdk 2.1.0\include\internal/optix_internal.h"
+	.file	22	"C:/CUDA/include\common_functions.h"
+	.file	23	"c:\cuda\include\math_functions.h"
+	.file	24	"c:\cuda\include\math_constants.h"
+	.file	25	"c:\cuda\include\device_functions.h"
+	.file	26	"c:\cuda\include\sm_11_atomic_functions.h"
+	.file	27	"c:\cuda\include\sm_12_atomic_functions.h"
+	.file	28	"c:\cuda\include\sm_13_double_functions.h"
+	.file	29	"c:\cuda\include\sm_20_atomic_functions.h"
+	.file	30	"c:\cuda\include\sm_20_intrinsics.h"
+	.file	31	"c:\cuda\include\surface_functions.h"
+	.file	32	"c:\cuda\include\texture_fetch_functions.h"
+	.file	33	"c:\cuda\include\math_functions_dbl_ptx1.h"
+
+	.global .align 16 .b8 sphere[16];
+	.global .align 16 .b8 geometric_normal[12];
+	.global .align 16 .b8 shading_normal[12];
+	.global .align 16 .b8 ray[36];
+
+	.entry _Z9intersecti (
+		.param .s32 __cudaparm__Z9intersecti_primIdx)
+	{
+	.reg .u32 %r<18>;
+	.reg .f32 %f<52>;
+	.reg .pred %p<7>;
+	.loc	20	87	0
+$LDWbegin__Z9intersecti:
+	ld.global.v4.f32 	{%f1,%f2,%f3,_}, [ray+0];
+	ld.global.v4.f32 	{%f4,%f5,%f6,%f7}, [sphere+0];
+	.loc	20	89	0
+	sub.f32 	%f8, %f2, %f5;
+	sub.f32 	%f9, %f1, %f4;
+	sub.f32 	%f10, %f3, %f6;
+	mul.f32 	%f11, %f8, %f8;
+	ld.global.v2.f32 	{%f12,%f13}, [ray+16];
+	mul.f32 	%f14, %f8, %f12;
+	mad.f32 	%f15, %f9, %f9, %f11;
+	ld.global.f32 	%f16, [ray+12];
+	mad.f32 	%f17, %f9, %f16, %f14;
+	mad.f32 	%f18, %f10, %f10, %f15;
+	mad.f32 	%f19, %f10, %f13, %f17;
+	mul.f32 	%f20, %f7, %f7;
+	sub.f32 	%f21, %f18, %f20;
+	mul.f32 	%f22, %f19, %f19;
+	sub.f32 	%f23, %f22, %f21;
+	mov.f32 	%f24, 0f00000000;    	// 0
+	setp.gt.f32 	%p1, %f23, %f24;
+	@!%p1 bra 	$Lt_0_7426;
+	.loc	20	70	0
+	mov.s32 	%r1, 1;
+	.loc	21	93	0
+	sqrt.approx.f32 	%f25, %f23;
+	add.f32 	%f26, %f19, %f25;
+	neg.f32 	%f27, %f26;
+	mov.f32 	%f28, %f27;
+	call (%r2), _rt_potential_intersection, (%f28);
+	mov.s32 	%r3, %r2;
+	.loc	20	71	0
+	mov.u32 	%r4, 0;
+	setp.eq.s32 	%p2, %r3, %r4;
+	@%p2 bra 	$Lt_0_8962;
+	.loc	20	72	0
+	rcp.approx.f32 	%f29, %f7;
+	mul.f32 	%f30, %f26, %f16;
+	sub.f32 	%f31, %f9, %f30;
+	mul.f32 	%f32, %f31, %f29;
+	mul.f32 	%f33, %f26, %f12;
+	sub.f32 	%f34, %f8, %f33;
+	mul.f32 	%f35, %f34, %f29;
+	st.global.v2.f32 	[geometric_normal+0], {%f32,%f35};
+	mul.f32 	%f36, %f26, %f13;
+	sub.f32 	%f37, %f10, %f36;
+	mul.f32 	%f38, %f37, %f29;
+	st.global.f32 	[geometric_normal+8], %f38;
+	st.global.v2.f32 	[shading_normal+0], {%f32,%f35};
+	st.global.f32 	[shading_normal+8], %f38;
+	.loc	21	103	0
+	mov.u32 	%r5, 0;
+	mov.u32 	%r6, %r5;
+	call (%r7), _rt_report_intersection, (%r6);
+	mov.s32 	%r8, %r7;
+	.loc	20	73	0
+	mov.u32 	%r9, 0;
+	setp.eq.s32 	%p3, %r8, %r9;
+	@%p3 bra 	$Lt_0_9474;
+	.loc	20	74	0
+	mov.s32 	%r1, 0;
+$Lt_0_9474:
+$Lt_0_8962:
+	mov.u32 	%r10, 0;
+	setp.eq.s32 	%p4, %r1, %r10;
+	@%p4 bra 	$Lt_0_9986;
+	.loc	21	93	0
+	sub.f32 	%f39, %f25, %f19;
+	mov.f32 	%f40, %f39;
+	call (%r11), _rt_potential_intersection, (%f40);
+	mov.s32 	%r12, %r11;
+	.loc	20	78	0
+	mov.u32 	%r13, 0;
+	setp.eq.s32 	%p5, %r12, %r13;
+	@%p5 bra 	$Lt_0_10498;
+	.loc	20	79	0
+	rcp.approx.f32 	%f41, %f7;
+	mul.f32 	%f42, %f39, %f16;
+	add.f32 	%f43, %f9, %f42;
+	mul.f32 	%f44, %f43, %f41;
+	mul.f32 	%f45, %f39, %f12;
+	add.f32 	%f46, %f8, %f45;
+	mul.f32 	%f47, %f46, %f41;
+	st.global.v2.f32 	[geometric_normal+0], {%f44,%f47};
+	mul.f32 	%f48, %f39, %f13;
+	add.f32 	%f49, %f10, %f48;
+	mul.f32 	%f50, %f49, %f41;
+	st.global.f32 	[geometric_normal+8], %f50;
+	st.global.v2.f32 	[shading_normal+0], {%f44,%f47};
+	st.global.f32 	[shading_normal+8], %f50;
+	.loc	21	103	0
+	mov.u32 	%r14, 0;
+	mov.u32 	%r15, %r14;
+	call (%r16), _rt_report_intersection, (%r15);
+$Lt_0_10498:
+$Lt_0_9986:
+$Lt_0_7426:
+	.loc	20	90	0
+	exit;
+$LDWend__Z9intersecti:
+	} // _Z9intersecti
+
+	.entry _Z16robust_intersecti (
+		.param .s32 __cudaparm__Z16robust_intersecti_primIdx)
+	{
+	.reg .u32 %r<20>;
+	.reg .f32 %f<72>;
+	.reg .pred %p<10>;
+	.loc	20	93	0
+$LDWbegin__Z16robust_intersecti:
+	ld.global.v4.f32 	{%f1,%f2,%f3,_}, [ray+0];
+	ld.global.v4.f32 	{%f4,%f5,%f6,%f7}, [sphere+0];
+	.loc	20	42	0
+	sub.f32 	%f8, %f2, %f5;
+	sub.f32 	%f9, %f1, %f4;
+	sub.f32 	%f10, %f3, %f6;
+	ld.global.v2.f32 	{%f11,%f12}, [ray+16];
+	mul.f32 	%f13, %f8, %f11;
+	ld.global.f32 	%f14, [ray+12];
+	mad.f32 	%f15, %f9, %f14, %f13;
+	mad.f32 	%f16, %f10, %f12, %f15;
+	mov.f32 	%f17, %f16;
+	mul.f32 	%f18, %f8, %f8;
+	mad.f32 	%f19, %f9, %f9, %f18;
+	mad.f32 	%f20, %f10, %f10, %f19;
+	mul.f32 	%f21, %f7, %f7;
+	sub.f32 	%f22, %f20, %f21;
+	mul.f32 	%f23, %f16, %f16;
+	sub.f32 	%f24, %f23, %f22;
+	mov.f32 	%f25, 0f00000000;    	// 0
+	setp.gt.f32 	%p1, %f24, %f25;
+	@!%p1 bra 	$Lt_1_7170;
+	.loc	20	46	0
+	sqrt.approx.f32 	%f26, %f24;
+	mov.f32 	%f27, %f26;
+	.loc	20	49	0
+	mov.s32 	%r1, 0;
+	.loc	20	51	0
+	mov.f32 	%f28, 0f00000000;    	// 0
+	add.f32 	%f29, %f16, %f26;
+	abs.f32 	%f30, %f29;
+	mov.f32 	%f31, 0f41200000;    	// 10
+	mul.f32 	%f32, %f7, %f31;
+	setp.gt.f32 	%p2, %f30, %f32;
+	@!%p2 bra 	$Lt_1_7682;
+	.loc	20	54	0
+	mov.s32 	%r1, 1;
+$Lt_1_7682:
+	mov.s32 	%r2, 0;
+	setp.ne.s32 	%p3, %r1, %r2;
+	@!%p3 bra 	$Lt_1_8194;
+	.loc	20	60	0
+	mul.f32 	%f33, %f29, %f11;
+	mul.f32 	%f34, %f29, %f14;
+	mul.f32 	%f35, %f29, %f12;
+	sub.f32 	%f36, %f8, %f33;
+	sub.f32 	%f37, %f9, %f34;
+	sub.f32 	%f38, %f10, %f35;
+	mul.f32 	%f39, %f36, %f11;
+	mad.f32 	%f40, %f14, %f37, %f39;
+	mad.f32 	%f17, %f38, %f12, %f40;
+	.loc	20	61	0
+	mul.f32 	%f41, %f36, %f36;
+	mad.f32 	%f42, %f37, %f37, %f41;
+	mad.f32 	%f43, %f38, %f38, %f42;
+	mul.f32 	%f44, %f7, %f7;
+	sub.f32 	%f45, %f43, %f44;
+	mul.f32 	%f46, %f17, %f17;
+	sub.f32 	%f47, %f46, %f45;
+	mov.f32 	%f48, 0f00000000;    	// 0
+	setp.gt.f32 	%p4, %f47, %f48;
+	@!%p4 bra 	$Lt_1_8706;
+	.loc	20	65	0
+	sqrt.approx.f32 	%f49, %f47;
+	mov.f32 	%f27, %f49;
+	.loc	20	66	0
+	add.f32 	%f50, %f49, %f17;
+	neg.f32 	%f28, %f50;
+$Lt_1_8706:
+$Lt_1_8194:
+	.loc	20	70	0
+	mov.s32 	%r3, 1;
+	.loc	21	93	0
+	sub.f32 	%f51, %f28, %f29;
+	mov.f32 	%f52, %f51;
+	call (%r4), _rt_potential_intersection, (%f52);
+	mov.s32 	%r5, %r4;
+	.loc	20	71	0
+	mov.u32 	%r6, 0;
+	setp.eq.s32 	%p5, %r5, %r6;
+	@%p5 bra 	$Lt_1_9218;
+	.loc	20	72	0
+	rcp.approx.f32 	%f53, %f7;
+	mad.f32 	%f54, %f51, %f14, %f9;
+	mul.f32 	%f55, %f53, %f54;
+	mad.f32 	%f56, %f51, %f11, %f8;
+	mul.f32 	%f57, %f53, %f56;
+	mad.f32 	%f58, %f51, %f12, %f10;
+	mul.f32 	%f59, %f53, %f58;
+	st.global.v2.f32 	[geometric_normal+0], {%f55,%f57};
+	st.global.f32 	[geometric_normal+8], %f59;
+	st.global.v2.f32 	[shading_normal+0], {%f55,%f57};
+	st.global.f32 	[shading_normal+8], %f59;
+	.loc	21	103	0
+	mov.u32 	%r7, 0;
+	mov.u32 	%r8, %r7;
+	call (%r9), _rt_report_intersection, (%r8);
+	mov.s32 	%r10, %r9;
+	.loc	20	73	0
+	mov.u32 	%r11, 0;
+	setp.eq.s32 	%p6, %r10, %r11;
+	@%p6 bra 	$Lt_1_9730;
+	.loc	20	74	0
+	mov.s32 	%r3, 0;
+$Lt_1_9730:
+$Lt_1_9218:
+	mov.u32 	%r12, 0;
+	setp.eq.s32 	%p7, %r3, %r12;
+	@%p7 bra 	$Lt_1_10242;
+	.loc	21	93	0
+	sub.f32 	%f60, %f27, %f17;
+	sub.f32 	%f61, %f60, %f29;
+	selp.f32 	%f62, %f61, %f60, %p3;
+	mov.f32 	%f63, %f62;
+	call (%r13), _rt_potential_intersection, (%f63);
+	mov.s32 	%r14, %r13;
+	.loc	20	78	0
+	mov.u32 	%r15, 0;
+	setp.eq.s32 	%p8, %r14, %r15;
+	@%p8 bra 	$Lt_1_10754;
+	.loc	20	79	0
+	mad.f32 	%f64, %f62, %f14, %f9;
+	mad.f32 	%f65, %f62, %f11, %f8;
+	mad.f32 	%f66, %f62, %f12, %f10;
+	rcp.approx.f32 	%f67, %f7;
+	mul.f32 	%f68, %f67, %f64;
+	mul.f32 	%f69, %f67, %f65;
+	st.global.v2.f32 	[geometric_normal+0], {%f68,%f69};
+	mul.f32 	%f70, %f67, %f66;
+	st.global.f32 	[geometric_normal+8], %f70;
+	st.global.v2.f32 	[shading_normal+0], {%f68,%f69};
+	st.global.f32 	[shading_normal+8], %f70;
+	.loc	21	103	0
+	mov.u32 	%r16, 0;
+	mov.u32 	%r17, %r16;
+	call (%r18), _rt_report_intersection, (%r17);
+$Lt_1_10754:
+$Lt_1_10242:
+$Lt_1_7170:
+	.loc	20	96	0
+	exit;
+$LDWend__Z16robust_intersecti:
+	} // _Z16robust_intersecti
+
+	.entry _Z6boundsiPf (
+		.param .s32 __cudaparm__Z6boundsiPf___T2284,
+		.param .u32 __cudaparm__Z6boundsiPf_result)
+	{
+	.reg .u32 %r<3>;
+	.reg .f32 %f<12>;
+	.loc	20	99	0
+$LDWbegin__Z6boundsiPf:
+	.loc	20	105	0
+	ld.param.u32 	%r1, [__cudaparm__Z6boundsiPf_result];
+	ld.global.v4.f32 	{%f1,%f2,%f3,%f4}, [sphere+0];
+	sub.f32 	%f5, %f1, %f4;
+	st.global.f32 	[%r1+0], %f5;
+	sub.f32 	%f6, %f2, %f4;
+	st.global.f32 	[%r1+4], %f6;
+	sub.f32 	%f7, %f3, %f4;
+	st.global.f32 	[%r1+8], %f7;
+	.loc	20	106	0
+	add.f32 	%f8, %f4, %f1;
+	st.global.f32 	[%r1+12], %f8;
+	add.f32 	%f9, %f2, %f4;
+	st.global.f32 	[%r1+16], %f9;
+	add.f32 	%f10, %f3, %f4;
+	st.global.f32 	[%r1+20], %f10;
+	.loc	20	107	0
+	exit;
+$LDWend__Z6boundsiPf:
+	} // _Z6boundsiPf
+	.global .align 16 .b8 texcoord[12];
+
+	.entry _Z20intersect_atmospherei (
+		.param .s32 __cudaparm__Z20intersect_atmospherei_primIdx)
+	{
+	.reg .u32 %r<18>;
+	.reg .f32 %f<58>;
+	.reg .pred %p<7>;
+	.loc	20	166	0
+$LDWbegin__Z20intersect_atmospherei:
+	ld.global.v4.f32 	{%f1,%f2,%f3,_}, [ray+0];
+	ld.global.v4.f32 	{%f4,%f5,%f6,%f7}, [sphere+0];
+	.loc	20	168	0
+	sub.f32 	%f8, %f2, %f5;
+	sub.f32 	%f9, %f1, %f4;
+	sub.f32 	%f10, %f3, %f6;
+	mul.f32 	%f11, %f8, %f8;
+	ld.global.v2.f32 	{%f12,%f13}, [ray+16];
+	mul.f32 	%f14, %f8, %f12;
+	mad.f32 	%f15, %f9, %f9, %f11;
+	ld.global.f32 	%f16, [ray+12];
+	mad.f32 	%f17, %f9, %f16, %f14;
+	mad.f32 	%f18, %f10, %f10, %f15;
+	mad.f32 	%f19, %f10, %f13, %f17;
+	mul.f32 	%f20, %f7, %f7;
+	sub.f32 	%f21, %f18, %f20;
+	mul.f32 	%f22, %f19, %f19;
+	sub.f32 	%f23, %f22, %f21;
+	mov.f32 	%f24, 0f00000000;    	// 0
+	setp.gt.f32 	%p1, %f23, %f24;
+	@!%p1 bra 	$Lt_3_7426;
+	.loc	20	148	0
+	mov.s32 	%r1, 1;
+	.loc	21	93	0
+	sqrt.approx.f32 	%f25, %f23;
+	add.f32 	%f26, %f19, %f25;
+	neg.f32 	%f27, %f26;
+	mov.f32 	%f28, %f27;
+	call (%r2), _rt_potential_intersection, (%f28);
+	mov.s32 	%r3, %r2;
+	.loc	20	149	0
+	mov.u32 	%r4, 0;
+	setp.eq.s32 	%p2, %r3, %r4;
+	@%p2 bra 	$Lt_3_8962;
+	.loc	20	150	0
+	rcp.approx.f32 	%f29, %f7;
+	mul.f32 	%f30, %f26, %f16;
+	sub.f32 	%f31, %f9, %f30;
+	mul.f32 	%f32, %f31, %f29;
+	mul.f32 	%f33, %f26, %f12;
+	sub.f32 	%f34, %f8, %f33;
+	mul.f32 	%f35, %f34, %f29;
+	st.global.v2.f32 	[geometric_normal+0], {%f32,%f35};
+	mul.f32 	%f36, %f26, %f13;
+	sub.f32 	%f37, %f10, %f36;
+	mul.f32 	%f38, %f37, %f29;
+	st.global.f32 	[geometric_normal+8], %f38;
+	st.global.v2.f32 	[shading_normal+0], {%f32,%f35};
+	st.global.f32 	[shading_normal+8], %f38;
+	.loc	20	151	0
+	mov.f32 	%f39, 0f00000000;    	// 0
+	mov.f32 	%f40, 0f00000000;    	// 0
+	st.global.v2.f32 	[texcoord+0], {%f39,%f40};
+	mov.f32 	%f41, 0f00000000;    	// 0
+	st.global.f32 	[texcoord+8], %f41;
+	.loc	21	103	0
+	mov.u32 	%r5, 0;
+	mov.u32 	%r6, %r5;
+	call (%r7), _rt_report_intersection, (%r6);
+	mov.s32 	%r8, %r7;
+	.loc	20	152	0
+	mov.u32 	%r9, 0;
+	setp.eq.s32 	%p3, %r8, %r9;
+	@%p3 bra 	$Lt_3_9474;
+	.loc	20	153	0
+	mov.s32 	%r1, 0;
+$Lt_3_9474:
+$Lt_3_8962:
+	mov.u32 	%r10, 0;
+	setp.eq.s32 	%p4, %r1, %r10;
+	@%p4 bra 	$Lt_3_9986;
+	.loc	21	93	0
+	sub.f32 	%f42, %f25, %f19;
+	mov.f32 	%f43, %f42;
+	call (%r11), _rt_potential_intersection, (%f43);
+	mov.s32 	%r12, %r11;
+	.loc	20	157	0
+	mov.u32 	%r13, 0;
+	setp.eq.s32 	%p5, %r12, %r13;
+	@%p5 bra 	$Lt_3_10498;
+	.loc	20	158	0
+	rcp.approx.f32 	%f44, %f7;
+	mul.f32 	%f45, %f42, %f16;
+	add.f32 	%f46, %f9, %f45;
+	mul.f32 	%f47, %f46, %f44;
+	mul.f32 	%f48, %f42, %f12;
+	add.f32 	%f49, %f8, %f48;
+	mul.f32 	%f50, %f49, %f44;
+	st.global.v2.f32 	[geometric_normal+0], {%f47,%f50};
+	mul.f32 	%f51, %f42, %f13;
+	add.f32 	%f52, %f10, %f51;
+	mul.f32 	%f53, %f52, %f44;
+	st.global.f32 	[geometric_normal+8], %f53;
+	st.global.v2.f32 	[shading_normal+0], {%f47,%f50};
+	st.global.f32 	[shading_normal+8], %f53;
+	.loc	20	159	0
+	mov.f32 	%f54, 0f00000000;    	// 0
+	mov.f32 	%f55, 0f00000000;    	// 0
+	st.global.v2.f32 	[texcoord+0], {%f54,%f55};
+	mov.f32 	%f56, 0f00000000;    	// 0
+	st.global.f32 	[texcoord+8], %f56;
+	.loc	21	103	0
+	mov.u32 	%r14, 0;
+	mov.u32 	%r15, %r14;
+	call (%r16), _rt_report_intersection, (%r15);
+$Lt_3_10498:
+$Lt_3_9986:
+$Lt_3_7426:
+	.loc	20	169	0
+	exit;
+$LDWend__Z20intersect_atmospherei:
+	} // _Z20intersect_atmospherei
+
+	.entry _Z27robust_intersect_atmospherei (
+		.param .s32 __cudaparm__Z27robust_intersect_atmospherei_primIdx)
+	{
+	.reg .u32 %r<20>;
+	.reg .f32 %f<78>;
+	.reg .pred %p<10>;
+	.loc	20	172	0
+$LDWbegin__Z27robust_intersect_atmospherei:
+	ld.global.v4.f32 	{%f1,%f2,%f3,_}, [ray+0];
+	ld.global.v4.f32 	{%f4,%f5,%f6,%f7}, [sphere+0];
+	.loc	20	120	0
+	sub.f32 	%f8, %f2, %f5;
+	sub.f32 	%f9, %f1, %f4;
+	sub.f32 	%f10, %f3, %f6;
+	ld.global.v2.f32 	{%f11,%f12}, [ray+16];
+	mul.f32 	%f13, %f8, %f11;
+	ld.global.f32 	%f14, [ray+12];
+	mad.f32 	%f15, %f9, %f14, %f13;
+	mad.f32 	%f16, %f10, %f12, %f15;
+	mov.f32 	%f17, %f16;
+	mul.f32 	%f18, %f8, %f8;
+	mad.f32 	%f19, %f9, %f9, %f18;
+	mad.f32 	%f20, %f10, %f10, %f19;
+	mul.f32 	%f21, %f7, %f7;
+	sub.f32 	%f22, %f20, %f21;
+	mul.f32 	%f23, %f16, %f16;
+	sub.f32 	%f24, %f23, %f22;
+	mov.f32 	%f25, 0f00000000;    	// 0
+	setp.gt.f32 	%p1, %f24, %f25;
+	@!%p1 bra 	$Lt_4_7170;
+	.loc	20	124	0
+	sqrt.approx.f32 	%f26, %f24;
+	mov.f32 	%f27, %f26;
+	.loc	20	127	0
+	mov.s32 	%r1, 0;
+	.loc	20	129	0
+	mov.f32 	%f28, 0f00000000;    	// 0
+	add.f32 	%f29, %f16, %f26;
+	abs.f32 	%f30, %f29;
+	mov.f32 	%f31, 0f41200000;    	// 10
+	mul.f32 	%f32, %f7, %f31;
+	setp.gt.f32 	%p2, %f30, %f32;
+	@!%p2 bra 	$Lt_4_7682;
+	.loc	20	132	0
+	mov.s32 	%r1, 1;
+$Lt_4_7682:
+	mov.s32 	%r2, 0;
+	setp.ne.s32 	%p3, %r1, %r2;
+	@!%p3 bra 	$Lt_4_8194;
+	.loc	20	138	0
+	mul.f32 	%f33, %f29, %f11;
+	mul.f32 	%f34, %f29, %f14;
+	mul.f32 	%f35, %f29, %f12;
+	sub.f32 	%f36, %f8, %f33;
+	sub.f32 	%f37, %f9, %f34;
+	sub.f32 	%f38, %f10, %f35;
+	mul.f32 	%f39, %f36, %f11;
+	mad.f32 	%f40, %f14, %f37, %f39;
+	mad.f32 	%f17, %f38, %f12, %f40;
+	.loc	20	139	0
+	mul.f32 	%f41, %f36, %f36;
+	mad.f32 	%f42, %f37, %f37, %f41;
+	mad.f32 	%f43, %f38, %f38, %f42;
+	mul.f32 	%f44, %f7, %f7;
+	sub.f32 	%f45, %f43, %f44;
+	mul.f32 	%f46, %f17, %f17;
+	sub.f32 	%f47, %f46, %f45;
+	mov.f32 	%f48, 0f00000000;    	// 0
+	setp.gt.f32 	%p4, %f47, %f48;
+	@!%p4 bra 	$Lt_4_8706;
+	.loc	20	143	0
+	sqrt.approx.f32 	%f49, %f47;
+	mov.f32 	%f27, %f49;
+	.loc	20	144	0
+	add.f32 	%f50, %f49, %f17;
+	neg.f32 	%f28, %f50;
+$Lt_4_8706:
+$Lt_4_8194:
+	.loc	20	148	0
+	mov.s32 	%r3, 1;
+	.loc	21	93	0
+	sub.f32 	%f51, %f28, %f29;
+	mov.f32 	%f52, %f51;
+	call (%r4), _rt_potential_intersection, (%f52);
+	mov.s32 	%r5, %r4;
+	.loc	20	149	0
+	mov.u32 	%r6, 0;
+	setp.eq.s32 	%p5, %r5, %r6;
+	@%p5 bra 	$Lt_4_9218;
+	.loc	20	150	0
+	rcp.approx.f32 	%f53, %f7;
+	mad.f32 	%f54, %f51, %f14, %f9;
+	mul.f32 	%f55, %f53, %f54;
+	mad.f32 	%f56, %f51, %f11, %f8;
+	mul.f32 	%f57, %f53, %f56;
+	mad.f32 	%f58, %f51, %f12, %f10;
+	mul.f32 	%f59, %f53, %f58;
+	st.global.v2.f32 	[geometric_normal+0], {%f55,%f57};
+	st.global.f32 	[geometric_normal+8], %f59;
+	st.global.v2.f32 	[shading_normal+0], {%f55,%f57};
+	st.global.f32 	[shading_normal+8], %f59;
+	.loc	20	151	0
+	mov.f32 	%f60, 0f00000000;    	// 0
+	mov.f32 	%f61, 0f00000000;    	// 0
+	st.global.v2.f32 	[texcoord+0], {%f60,%f61};
+	mov.f32 	%f62, 0f00000000;    	// 0
+	st.global.f32 	[texcoord+8], %f62;
+	.loc	21	103	0
+	mov.u32 	%r7, 0;
+	mov.u32 	%r8, %r7;
+	call (%r9), _rt_report_intersection, (%r8);
+	mov.s32 	%r10, %r9;
+	.loc	20	152	0
+	mov.u32 	%r11, 0;
+	setp.eq.s32 	%p6, %r10, %r11;
+	@%p6 bra 	$Lt_4_9730;
+	.loc	20	153	0
+	mov.s32 	%r3, 0;
+$Lt_4_9730:
+$Lt_4_9218:
+	mov.u32 	%r12, 0;
+	setp.eq.s32 	%p7, %r3, %r12;
+	@%p7 bra 	$Lt_4_10242;
+	.loc	21	93	0
+	sub.f32 	%f63, %f27, %f17;
+	sub.f32 	%f64, %f63, %f29;
+	selp.f32 	%f65, %f64, %f63, %p3;
+	mov.f32 	%f66, %f65;
+	call (%r13), _rt_potential_intersection, (%f66);
+	mov.s32 	%r14, %r13;
+	.loc	20	157	0
+	mov.u32 	%r15, 0;
+	setp.eq.s32 	%p8, %r14, %r15;
+	@%p8 bra 	$Lt_4_10754;
+	.loc	20	158	0
+	mad.f32 	%f67, %f65, %f14, %f9;
+	mad.f32 	%f68, %f65, %f11, %f8;
+	mad.f32 	%f69, %f65, %f12, %f10;
+	rcp.approx.f32 	%f70, %f7;
+	mul.f32 	%f71, %f70, %f67;
+	mul.f32 	%f72, %f70, %f68;
+	st.global.v2.f32 	[geometric_normal+0], {%f71,%f72};
+	mul.f32 	%f73, %f70, %f69;
+	st.global.f32 	[geometric_normal+8], %f73;
+	st.global.v2.f32 	[shading_normal+0], {%f71,%f72};
+	st.global.f32 	[shading_normal+8], %f73;
+	.loc	20	159	0
+	mov.f32 	%f74, 0f00000000;    	// 0
+	mov.f32 	%f75, 0f00000000;    	// 0
+	st.global.v2.f32 	[texcoord+0], {%f74,%f75};
+	mov.f32 	%f76, 0f00000000;    	// 0
+	st.global.f32 	[texcoord+8], %f76;
+	.loc	21	103	0
+	mov.u32 	%r16, 0;
+	mov.u32 	%r17, %r16;
+	call (%r18), _rt_report_intersection, (%r17);
+$Lt_4_10754:
+$Lt_4_10242:
+$Lt_4_7170:
+	.loc	20	175	0
+	exit;
+$LDWend__Z27robust_intersect_atmospherei:
+	} // _Z27robust_intersect_atmospherei
+
+	.entry _Z17bounds_atmosphereiPf (
+		.param .s32 __cudaparm__Z17bounds_atmosphereiPf_primIdx,
+		.param .u32 __cudaparm__Z17bounds_atmosphereiPf_result)
+	{
+	.reg .u32 %r<3>;
+	.reg .f32 %f<12>;
+	.loc	20	177	0
+$LDWbegin__Z17bounds_atmosphereiPf:
+	.loc	20	183	0
+	ld.param.u32 	%r1, [__cudaparm__Z17bounds_atmosphereiPf_result];
+	ld.global.v4.f32 	{%f1,%f2,%f3,%f4}, [sphere+0];
+	sub.f32 	%f5, %f1, %f4;
+	st.global.f32 	[%r1+0], %f5;
+	sub.f32 	%f6, %f2, %f4;
+	st.global.f32 	[%r1+4], %f6;
+	sub.f32 	%f7, %f3, %f4;
+	st.global.f32 	[%r1+8], %f7;
+	.loc	20	184	0
+	add.f32 	%f8, %f4, %f1;
+	st.global.f32 	[%r1+12], %f8;
+	add.f32 	%f9, %f2, %f4;
+	st.global.f32 	[%r1+16], %f9;
+	add.f32 	%f10, %f3, %f4;
+	st.global.f32 	[%r1+20], %f10;
+	.loc	20	188	0
+	exit;
+$LDWend__Z17bounds_atmosphereiPf:
+	} // _Z17bounds_atmosphereiPf
+
+	.entry _Z13tex_intersecti (
+		.param .s32 __cudaparm__Z13tex_intersecti_primIdx)
+	{
+	.reg .u32 %r<34>;
+	.reg .f32 %f<199>;
+	.reg .pred %p<23>;
+	.loc	20	193	0
+$LDWbegin__Z13tex_intersecti:
+	ld.global.v4.f32 	{%f1,%f2,%f3,_}, [ray+0];
+	ld.global.v4.f32 	{%f4,%f5,%f6,%f7}, [sphere+0];
+	sub.f32 	%f8, %f2, %f5;
+	sub.f32 	%f9, %f1, %f4;
+	sub.f32 	%f10, %f3, %f6;
+	mul.f32 	%f11, %f8, %f8;
+	ld.global.v2.f32 	{%f12,%f13}, [ray+16];
+	mul.f32 	%f14, %f8, %f12;
+	mad.f32 	%f15, %f9, %f9, %f11;
+	ld.global.f32 	%f16, [ray+12];
+	mad.f32 	%f17, %f9, %f16, %f14;
+	mad.f32 	%f18, %f10, %f10, %f15;
+	mad.f32 	%f19, %f10, %f13, %f17;
+	mul.f32 	%f20, %f7, %f7;
+	sub.f32 	%f21, %f18, %f20;
+	mul.f32 	%f22, %f19, %f19;
+	sub.f32 	%f23, %f22, %f21;
+	mov.f32 	%f24, 0f00000000;    	// 0
+	setp.gt.f32 	%p1, %f23, %f24;
+	@!%p1 bra 	$Lt_6_23554;
+	.loc	20	210	0
+	mov.s32 	%r1, 1;
+	.loc	21	93	0
+	sqrt.approx.f32 	%f25, %f23;
+	add.f32 	%f26, %f19, %f25;
+	neg.f32 	%f27, %f26;
+	mov.f32 	%f28, %f27;
+	call (%r2), _rt_potential_intersection, (%f28);
+	mov.s32 	%r3, %r2;
+	.loc	20	211	0
+	mov.u32 	%r4, 0;
+	setp.eq.s32 	%p2, %r3, %r4;
+	@%p2 bra 	$Lt_6_22530;
+	.loc	20	212	0
+	rcp.approx.f32 	%f29, %f7;
+	mul.f32 	%f30, %f26, %f16;
+	sub.f32 	%f31, %f9, %f30;
+	mul.f32 	%f32, %f31, %f29;
+	mul.f32 	%f33, %f26, %f12;
+	sub.f32 	%f34, %f8, %f33;
+	mul.f32 	%f35, %f34, %f29;
+	st.global.v2.f32 	[geometric_normal+0], {%f32,%f35};
+	mul.f32 	%f36, %f26, %f13;
+	sub.f32 	%f37, %f10, %f36;
+	mul.f32 	%f38, %f37, %f29;
+	st.global.f32 	[geometric_normal+8], %f38;
+	st.global.v2.f32 	[shading_normal+0], {%f32,%f35};
+	st.global.f32 	[shading_normal+8], %f38;
+	.loc	20	219	0
+	mul.f32 	%f39, %f35, %f35;
+	mad.f32 	%f40, %f32, %f32, %f39;
+	mad.f32 	%f41, %f38, %f38, %f40;
+	sqrt.approx.f32 	%f42, %f40;
+	mov.f32 	%f43, 0f00000000;    	// 0
+	setp.gt.f32 	%p3, %f42, %f43;
+	@!%p3 bra 	$Lt_6_20738;
+	.loc	25	544	0
+	div.approx.f32 	%f44, %f35, %f32;
+	.loc	23	2033	0
+	abs.f32 	%f45, %f44;
+	mov.f32 	%f46, 0f3f800000;    	// 1
+	setp.gt.f32 	%p4, %f45, %f46;
+	rcp.approx.f32 	%f47, %f45;
+	selp.f32 	%f48, %f47, %f45, %p4;
+	mul.f32 	%f49, %f48, %f48;
+	mov.f32 	%f50, 0fc0b59883;    	// -5.67487
+	mov.f32 	%f51, 0fbf52c7ea;    	// -0.823363
+	mad.f32 	%f52, %f51, %f49, %f50;
+	mov.f32 	%f53, 0f41355dc0;    	// 11.3354
+	add.f32 	%f54, %f49, %f53;
+	mov.f32 	%f55, 0fc0d21907;    	// -6.56556
+	mad.f32 	%f56, %f49, %f52, %f55;
+	mov.f32 	%f57, 0f41e6bd60;    	// 28.8425
+	mad.f32 	%f58, %f49, %f54, %f57;
+	mul.f32 	%f59, %f49, %f56;
+	mov.f32 	%f60, 0f419d92c8;    	// 19.6967
+	mad.f32 	%f61, %f49, %f58, %f60;
+	mul.f32 	%f62, %f48, %f59;
+	rcp.approx.f32 	%f63, %f61;
+	mad.f32 	%f64, %f62, %f63, %f48;
+	mov.f32 	%f65, 0f3fc90fdb;    	// 1.5708
+	sub.f32 	%f66, %f65, %f64;
+	selp.f32 	%f67, %f66, %f64, %p4;
+	mov.f32 	%f68, 0f7f800000;    	// 1.#INF
+	setp.le.f32 	%p5, %f45, %f68;
+	@!%p5 bra 	$Lt_6_20994;
+	.loc	23	2039	0
+	mov.b32 	%r5, %f67;
+	mov.b32 	%r6, %f44;
+	and.b32 	%r7, %r6, -2147483648;
+	or.b32 	%r8, %r5, %r7;
+	mov.b32 	%f67, %r8;
+$Lt_6_20994:
+	.loc	20	219	0
+	mov.f32 	%f69, %f67;
+	.loc	25	544	0
+	div.approx.f32 	%f70, %f38, %f42;
+	.loc	23	2033	0
+	abs.f32 	%f71, %f70;
+	mov.f32 	%f72, 0f3f800000;    	// 1
+	setp.gt.f32 	%p6, %f71, %f72;
+	rcp.approx.f32 	%f73, %f71;
+	selp.f32 	%f74, %f73, %f71, %p6;
+	mul.f32 	%f75, %f74, %f74;
+	mov.f32 	%f76, 0fc0b59883;    	// -5.67487
+	mov.f32 	%f77, 0fbf52c7ea;    	// -0.823363
+	mad.f32 	%f78, %f77, %f75, %f76;
+	mov.f32 	%f79, 0f41355dc0;    	// 11.3354
+	add.f32 	%f80, %f75, %f79;
+	mov.f32 	%f81, 0fc0d21907;    	// -6.56556
+	mad.f32 	%f82, %f75, %f78, %f81;
+	mov.f32 	%f83, 0f41e6bd60;    	// 28.8425
+	mad.f32 	%f84, %f75, %f80, %f83;
+	mul.f32 	%f85, %f75, %f82;
+	mov.f32 	%f86, 0f419d92c8;    	// 19.6967
+	mad.f32 	%f87, %f75, %f84, %f86;
+	mul.f32 	%f88, %f74, %f85;
+	rcp.approx.f32 	%f89, %f87;
+	mad.f32 	%f90, %f88, %f89, %f74;
+	mov.f32 	%f91, 0f3fc90fdb;    	// 1.5708
+	sub.f32 	%f92, %f91, %f90;
+	selp.f32 	%f67, %f92, %f90, %p6;
+	mov.f32 	%f93, 0f7f800000;    	// 1.#INF
+	setp.le.f32 	%p7, %f71, %f93;
+	@!%p7 bra 	$Lt_6_21506;
+	.loc	23	2039	0
+	mov.b32 	%r9, %f67;
+	mov.b32 	%r10, %f70;
+	and.b32 	%r11, %r10, -2147483648;
+	or.b32 	%r12, %r9, %r11;
+	mov.b32 	%f67, %r12;
+$Lt_6_21506:
+	.loc	20	219	0
+	mov.f32 	%f94, %f67;
+	mov.f32 	%f95, 0f00000000;    	// 0
+	setp.lt.f32 	%p8, %f32, %f95;
+	@!%p8 bra 	$Lt_6_22274;
+	mov.f32 	%f96, 0f40490fdb;    	// 3.14159
+	add.f32 	%f69, %f69, %f96;
+	bra.uni 	$Lt_6_20482;
+$Lt_6_22274:
+	mov.f32 	%f97, 0f40c90fdb;    	// 6.28319
+	add.f32 	%f98, %f69, %f97;
+	mov.f32 	%f99, 0f00000000;    	// 0
+	setp.lt.f32 	%p9, %f35, %f99;
+	selp.f32 	%f69, %f98, %f69, %p9;
+	bra.uni 	$Lt_6_20482;
+$Lt_6_20738:
+	mov.f32 	%f69, 0f00000000;    	// 0
+	mov.f32 	%f100, 0f3fc90fdb;   	// 1.5708
+	mov.f32 	%f101, 0fbfc90fdb;   	// -1.5708
+	mov.f32 	%f102, 0f00000000;   	// 0
+	setp.gt.f32 	%p10, %f38, %f102;
+	selp.f32 	%f94, %f100, %f101, %p10;
+$Lt_6_20482:
+	.loc	20	221	0
+	mov.f32 	%f103, 0f3f000000;   	// 0.5
+	mul.f32 	%f104, %f69, %f103;
+	mov.f32 	%f105, 0f3ea2f983;   	// 0.31831
+	mul.f32 	%f106, %f104, %f105;
+	mov.f32 	%f107, 0f3fc90fdb;   	// 1.5708
+	add.f32 	%f108, %f94, %f107;
+	mov.f32 	%f109, 0f3ea2f983;   	// 0.31831
+	mul.f32 	%f110, %f108, %f109;
+	st.global.v2.f32 	[texcoord+0], {%f106,%f110};
+	sqrt.approx.f32 	%f111, %f41;
+	div.approx.f32 	%f112, %f111, %f7;
+	st.global.f32 	[texcoord+8], %f112;
+	.loc	21	103	0
+	mov.u32 	%r13, 0;
+	mov.u32 	%r14, %r13;
+	call (%r15), _rt_report_intersection, (%r14);
+	mov.s32 	%r16, %r15;
+	.loc	20	223	0
+	mov.u32 	%r17, 0;
+	setp.eq.s32 	%p11, %r16, %r17;
+	@%p11 bra 	$Lt_6_22530;
+	.loc	20	224	0
+	mov.s32 	%r1, 0;
+$Lt_6_22530:
+$Lt_6_19970:
+	mov.u32 	%r18, 0;
+	setp.eq.s32 	%p12, %r1, %r18;
+	@%p12 bra 	$Lt_6_23554;
+	.loc	21	93	0
+	sub.f32 	%f113, %f25, %f19;
+	mov.f32 	%f114, %f113;
+	call (%r19), _rt_potential_intersection, (%f114);
+	mov.s32 	%r20, %r19;
+	.loc	20	228	0
+	mov.u32 	%r21, 0;
+	setp.eq.s32 	%p13, %r20, %r21;
+	@%p13 bra 	$Lt_6_23554;
+	.loc	20	229	0
+	rcp.approx.f32 	%f115, %f7;
+	mul.f32 	%f116, %f113, %f16;
+	add.f32 	%f117, %f9, %f116;
+	mul.f32 	%f118, %f117, %f115;
+	mul.f32 	%f119, %f113, %f12;
+	add.f32 	%f120, %f8, %f119;
+	mul.f32 	%f121, %f120, %f115;
+	st.global.v2.f32 	[geometric_normal+0], {%f118,%f121};
+	mul.f32 	%f122, %f113, %f13;
+	add.f32 	%f123, %f10, %f122;
+	mul.f32 	%f124, %f123, %f115;
+	st.global.f32 	[geometric_normal+8], %f124;
+	st.global.v2.f32 	[shading_normal+0], {%f118,%f121};
+	st.global.f32 	[shading_normal+8], %f124;
+	.loc	20	235	0
+	mul.f32 	%f125, %f121, %f121;
+	mad.f32 	%f126, %f118, %f118, %f125;
+	mad.f32 	%f127, %f124, %f124, %f126;
+	sqrt.approx.f32 	%f128, %f126;
+	mov.f32 	%f129, 0f00000000;   	// 0
+	setp.gt.f32 	%p14, %f128, %f129;
+	@!%p14 bra 	$Lt_6_24322;
+	.loc	25	544	0
+	div.approx.f32 	%f130, %f121, %f118;
+	.loc	23	2033	0
+	abs.f32 	%f131, %f130;
+	mov.f32 	%f132, 0f3f800000;   	// 1
+	setp.gt.f32 	%p15, %f131, %f132;
+	rcp.approx.f32 	%f133, %f131;
+	selp.f32 	%f134, %f133, %f131, %p15;
+	mul.f32 	%f135, %f134, %f134;
+	mov.f32 	%f136, 0fc0b59883;   	// -5.67487
+	mov.f32 	%f137, 0fbf52c7ea;   	// -0.823363
+	mad.f32 	%f138, %f137, %f135, %f136;
+	mov.f32 	%f139, 0f41355dc0;   	// 11.3354
+	add.f32 	%f140, %f135, %f139;
+	mov.f32 	%f141, 0fc0d21907;   	// -6.56556
+	mad.f32 	%f142, %f135, %f138, %f141;
+	mov.f32 	%f143, 0f41e6bd60;   	// 28.8425
+	mad.f32 	%f144, %f135, %f140, %f143;
+	mul.f32 	%f145, %f135, %f142;
+	mov.f32 	%f146, 0f419d92c8;   	// 19.6967
+	mad.f32 	%f147, %f135, %f144, %f146;
+	mul.f32 	%f148, %f134, %f145;
+	rcp.approx.f32 	%f149, %f147;
+	mad.f32 	%f150, %f148, %f149, %f134;
+	mov.f32 	%f151, 0f3fc90fdb;   	// 1.5708
+	sub.f32 	%f152, %f151, %f150;
+	selp.f32 	%f67, %f152, %f150, %p15;
+	mov.f32 	%f153, 0f7f800000;   	// 1.#INF
+	setp.le.f32 	%p16, %f131, %f153;
+	@!%p16 bra 	$Lt_6_24578;
+	.loc	23	2039	0
+	mov.b32 	%r22, %f67;
+	mov.b32 	%r23, %f130;
+	and.b32 	%r24, %r23, -2147483648;
+	or.b32 	%r25, %r22, %r24;
+	mov.b32 	%f67, %r25;
+$Lt_6_24578:
+	.loc	20	235	0
+	mov.f32 	%f154, %f67;
+	.loc	25	544	0
+	div.approx.f32 	%f155, %f124, %f128;
+	.loc	23	2033	0
+	abs.f32 	%f156, %f155;
+	mov.f32 	%f157, 0f3f800000;   	// 1
+	setp.gt.f32 	%p17, %f156, %f157;
+	rcp.approx.f32 	%f158, %f156;
+	selp.f32 	%f159, %f158, %f156, %p17;
+	mul.f32 	%f160, %f159, %f159;
+	mov.f32 	%f161, 0fc0b59883;   	// -5.67487
+	mov.f32 	%f162, 0fbf52c7ea;   	// -0.823363
+	mad.f32 	%f163, %f162, %f160, %f161;
+	mov.f32 	%f164, 0f41355dc0;   	// 11.3354
+	add.f32 	%f165, %f160, %f164;
+	mov.f32 	%f166, 0fc0d21907;   	// -6.56556
+	mad.f32 	%f167, %f160, %f163, %f166;
+	mov.f32 	%f168, 0f41e6bd60;   	// 28.8425
+	mad.f32 	%f169, %f160, %f165, %f168;
+	mul.f32 	%f170, %f160, %f167;
+	mov.f32 	%f171, 0f419d92c8;   	// 19.6967
+	mad.f32 	%f172, %f160, %f169, %f171;
+	mul.f32 	%f173, %f159, %f170;
+	rcp.approx.f32 	%f174, %f172;
+	mad.f32 	%f175, %f173, %f174, %f159;
+	mov.f32 	%f176, 0f3fc90fdb;   	// 1.5708
+	sub.f32 	%f177, %f176, %f175;
+	selp.f32 	%f67, %f177, %f175, %p17;
+	mov.f32 	%f178, 0f7f800000;   	// 1.#INF
+	setp.le.f32 	%p18, %f156, %f178;
+	@!%p18 bra 	$Lt_6_25090;
+	.loc	23	2039	0
+	mov.b32 	%r26, %f67;
+	mov.b32 	%r27, %f155;
+	and.b32 	%r28, %r27, -2147483648;
+	or.b32 	%r29, %r26, %r28;
+	mov.b32 	%f67, %r29;
+$Lt_6_25090:
+	.loc	20	235	0
+	mov.f32 	%f179, %f67;
+	mov.f32 	%f180, 0f00000000;   	// 0
+	setp.lt.f32 	%p19, %f118, %f180;
+	@!%p19 bra 	$Lt_6_25858;
+	mov.f32 	%f181, 0f40490fdb;   	// 3.14159
+	add.f32 	%f154, %f154, %f181;
+	bra.uni 	$Lt_6_24066;
+$Lt_6_25858:
+	mov.f32 	%f182, 0f40c90fdb;   	// 6.28319
+	add.f32 	%f183, %f154, %f182;
+	mov.f32 	%f184, 0f00000000;   	// 0
+	setp.lt.f32 	%p20, %f121, %f184;
+	selp.f32 	%f154, %f183, %f154, %p20;
+	bra.uni 	$Lt_6_24066;
+$Lt_6_24322:
+	mov.f32 	%f154, 0f00000000;   	// 0
+	mov.f32 	%f185, 0f3fc90fdb;   	// 1.5708
+	mov.f32 	%f186, 0fbfc90fdb;   	// -1.5708
+	mov.f32 	%f187, 0f00000000;   	// 0
+	setp.gt.f32 	%p21, %f124, %f187;
+	selp.f32 	%f179, %f185, %f186, %p21;
+$Lt_6_24066:
+	.loc	20	237	0
+	mov.f32 	%f188, 0f3f000000;   	// 0.5
+	mul.f32 	%f189, %f154, %f188;
+	mov.f32 	%f190, 0f3ea2f983;   	// 0.31831
+	mul.f32 	%f191, %f189, %f190;
+	mov.f32 	%f192, 0f3fc90fdb;   	// 1.5708
+	add.f32 	%f193, %f179, %f192;
+	mov.f32 	%f194, 0f3ea2f983;   	// 0.31831
+	mul.f32 	%f195, %f193, %f194;
+	st.global.v2.f32 	[texcoord+0], {%f191,%f195};
+	sqrt.approx.f32 	%f196, %f127;
+	div.approx.f32 	%f197, %f196, %f7;
+	st.global.f32 	[texcoord+8], %f197;
+	.loc	21	103	0
+	mov.u32 	%r30, 0;
+	mov.u32 	%r31, %r30;
+	call (%r32), _rt_report_intersection, (%r31);
+$Lt_6_23554:
+$Lt_6_23042:
+$Lt_6_19458:
+	.loc	20	243	0
+	exit;
+$LDWend__Z13tex_intersecti:
+	} // _Z13tex_intersecti
+
+	.entry _Z10tex_boundsiPN5optix4AabbE (
+		.param .s32 __cudaparm__Z10tex_boundsiPN5optix4AabbE___T2417,
+		.param .u32 __cudaparm__Z10tex_boundsiPN5optix4AabbE_aabb)
+	{
+	.reg .u32 %r<3>;
+	.reg .f32 %f<12>;
+	.loc	20	245	0
+$LDWbegin__Z10tex_boundsiPN5optix4AabbE:
+	.loc	20	249	0
+	ld.param.u32 	%r1, [__cudaparm__Z10tex_boundsiPN5optix4AabbE_aabb];
+	ld.global.v4.f32 	{%f1,%f2,%f3,%f4}, [sphere+0];
+	sub.f32 	%f5, %f1, %f4;
+	st.global.f32 	[%r1+0], %f5;
+	sub.f32 	%f6, %f2, %f4;
+	st.global.f32 	[%r1+4], %f6;
+	sub.f32 	%f7, %f3, %f4;
+	st.global.f32 	[%r1+8], %f7;
+	.loc	20	250	0
+	add.f32 	%f8, %f4, %f1;
+	st.global.f32 	[%r1+12], %f8;
+	add.f32 	%f9, %f2, %f4;
+	st.global.f32 	[%r1+16], %f9;
+	add.f32 	%f10, %f3, %f4;
+	st.global.f32 	[%r1+20], %f10;
+	.loc	20	251	0
+	exit;
+$LDWend__Z10tex_boundsiPN5optix4AabbE:
+	} // _Z10tex_boundsiPN5optix4AabbE
+	.global .u32 _ZN21rti_internal_register20reg_bitness_detectorE;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail0E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail1E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail2E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail3E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail4E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail5E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail6E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail7E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail8E;
+	.global .u64 _ZN21rti_internal_register24reg_exception_64_detail9E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail0E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail1E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail2E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail3E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail4E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail5E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail6E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail7E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail8E;
+	.global .u32 _ZN21rti_internal_register21reg_exception_detail9E;
+	.global .u32 _ZN21rti_internal_register14reg_rayIndex_xE;
+	.global .u32 _ZN21rti_internal_register14reg_rayIndex_yE;
+	.global .u32 _ZN21rti_internal_register14reg_rayIndex_zE;
+	.global .align 4 .b8 _ZN21rti_internal_typeinfo6sphereE[8] = {82,97,121,0,16,0,0,0};
+	.global .align 4 .b8 _ZN21rti_internal_typeinfo16geometric_normalE[8] = {82,97,121,0,12,0,0,0};
+	.global .align 4 .b8 _ZN21rti_internal_typeinfo14shading_normalE[8] = {82,97,121,0,12,0,0,0};
+	.global .align 4 .b8 _ZN21rti_internal_typeinfo3rayE[8] = {82,97,121,0,36,0,0,0};
+	.global .align 4 .b8 _ZN21rti_internal_typeinfo8texcoordE[8] = {82,97,121,0,12,0,0,0};
+	.global .align 1 .b8 _ZN21rti_internal_typename6sphereE[7] = {0x66,0x6c,0x6f,0x61,0x74,0x34,0x0};
+	.global .align 1 .b8 _ZN21rti_internal_typename16geometric_normalE[7] = {0x66,0x6c,0x6f,0x61,0x74,0x33,0x0};
+	.global .align 1 .b8 _ZN21rti_internal_typename14shading_normalE[7] = {0x66,0x6c,0x6f,0x61,0x74,0x33,0x0};
+	.global .align 1 .b8 _ZN21rti_internal_typename3rayE[11] = {0x6f,0x70,0x74,0x69,0x78,0x3a,0x3a,0x52,0x61,0x79,0x0};
+	.global .align 1 .b8 _ZN21rti_internal_typename8texcoordE[7] = {0x66,0x6c,0x6f,0x61,0x74,0x33,0x0};
+	.global .align 1 .b8 _ZN21rti_internal_semantic6sphereE[1] = {0x0};
+	.global .align 1 .b8 _ZN21rti_internal_semantic16geometric_normalE[27] = {0x61,0x74,0x74,0x72,0x69,0x62,0x75,0x74,0x65,0x20,0x67,0x65,0x6f,0x6d,0x65,0x74,0x72,0x69,0x63,0x5f,0x6e,0x6f,0x72,0x6d,0x61,0x6c,0x0};
+	.global .align 1 .b8 _ZN21rti_internal_semantic14shading_normalE[25] = {0x61,0x74,0x74,0x72,0x69,0x62,0x75,0x74,0x65,0x20,0x73,0x68,0x61,0x64,0x69,0x6e,0x67,0x5f,0x6e,0x6f,0x72,0x6d,0x61,0x6c,0x0};
+	.global .align 1 .b8 _ZN21rti_internal_semantic3rayE[13] = {0x72,0x74,0x43,0x75,0x72,0x72,0x65,0x6e,0x74,0x52,0x61,0x79,0x0};
+	.global .align 1 .b8 _ZN21rti_internal_semantic8texcoordE[19] = {0x61,0x74,0x74,0x72,0x69,0x62,0x75,0x74,0x65,0x20,0x74,0x65,0x78,0x63,0x6f,0x6f,0x72,0x64,0x0};
+	.global .align 1 .b8 _ZN23rti_internal_annotation6sphereE[1] = {0x0};
+	.global .align 1 .b8 _ZN23rti_internal_annotation16geometric_normalE[1] = {0x0};
+	.global .align 1 .b8 _ZN23rti_internal_annotation14shading_normalE[1] = {0x0};
+	.global .align 1 .b8 _ZN23rti_internal_annotation3rayE[1] = {0x0};
+	.global .align 1 .b8 _ZN23rti_internal_annotation8texcoordE[1] = {0x0};
+
