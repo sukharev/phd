@@ -37,6 +37,7 @@
 #include "commonStructs.h"
 #include <cstdlib>
 #include <cstring>
+#include "perlin.h"
 
 using namespace optix;
 
@@ -86,6 +87,74 @@ namespace {
       }
       databuffer->unmap();
     }
+
+    static void fillBufferPerlin(Context& context, Buffer& databuffer, int nx, int ny)
+    {
+	  //PerlinNoise pn(0.5, 4, 128,7, 5);
+	  
+	  PerlinNoise pn(0.5, 1.2, 128,7, 5);
+	  double res =0.0;
+	  double min_res = pn.GetHeight(0.0, 0.0);
+	  double max_res = pn.GetHeight(0.0, 0.0);
+	  std::vector<double> pn_arr;
+	  for (int i = 0; i <= nx; i++){
+	    float x = float(i)/nx * 8 - 1;
+		for (int j = 0; j <= ny; j++){
+			float y = float(j)/ny * 8 - 1;
+			res = pn.GetHeight(x, y);
+			pn_arr.push_back(res);
+			if(res < min_res)
+				min_res = res;
+			if(res > max_res)
+				max_res = res;
+		}
+	  }
+      databuffer = context->createBuffer( RT_BUFFER_INPUT, RT_FORMAT_FLOAT, nx+1, ny+1 );
+      float* p = reinterpret_cast<float*>(databuffer->map());
+      for(int i = 0; i<= nx*ny; i++){
+		*p++ = (pn_arr[i]-min_res)/(max_res-min_res);
+      }
+      databuffer->unmap();
+    }
+
+	static void fillBufferPerlinGPU(Context& context, Buffer& databuffer, int nx, int ny)
+	{
+		PerlinNoiseGPU pngp;
+		/*
+		char *pixels;
+		int i,j;
+
+		glGenTextures(1, texID); // Generate a unique texture ID
+		glBindTexture(GL_TEXTURE_2D, *texID); // Bind the texture to texture unit 0
+
+		pixels = (char*)malloc( 256*256*4 );
+		for(i = 0; i<256; i++)
+		for(j = 0; j<256; j++) {
+		  int offset = (i*256+j)*4;
+		  char value = perm[(j+perm[i]) & 0xFF];
+		  pixels[offset] = grad3[value & 0x0F][0] * 64 + 64;   // Gradient x
+		  pixels[offset+1] = grad3[value & 0x0F][1] * 64 + 64; // Gradient y
+		  pixels[offset+2] = grad3[value & 0x0F][2] * 64 + 64; // Gradient z
+		  pixels[offset+3] = value;                     // Permuted index
+		}
+
+
+		glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+		*/
+	}
+}
+
+//------------------------------------------------------------------------------
+//
+//  Helper functions
+//
+//------------------------------------------------------------------------------
+
+static float rand_range(float min, float max)
+{
+  return min + (max - min) * (float) rand() / (float) RAND_MAX;
 }
 
 
@@ -107,6 +176,9 @@ public:
 
   void createGeometry();
   void createData();
+  GeometryInstance getGeo(float3 min, float3 max, bool bTest);
+  void getParallelogramVector(std::vector<GeometryInstance>& gis);
+  void setupNoiseTexture();
 
 private:
   Buffer      databuffer;
@@ -213,15 +285,181 @@ void HeightfieldScene::trace( const RayGenCameraData& camera_data )
                     );
 }
 
-void HeightfieldScene::createGeometry()
+void HeightfieldScene::setupNoiseTexture()
+{
+	// 3D solid noise buffer, 1 float channel, all entries in the range [0.0, 1.0].
+  srand(0); // Make sure the pseudo random numbers are the same every run.
+
+  int tex_width  = 164;
+  int tex_height = 164;
+  int tex_depth  = 64;
+  Buffer noiseBuffer = m_context->createBuffer(RT_BUFFER_INPUT, RT_FORMAT_FLOAT, tex_width, tex_height);//, tex_depth);
+  float *tex_data = (float *) noiseBuffer->map();
+  bool bPerlin = true;
+
+  PerlinNoise pn(0.5, 4, 128,7, 5);
+  if (bPerlin)
+  {
+    // Distances to Voronoi control points (repeated version, taking the 26 surrounding cubes into account!)
+    // Voronoi_repeat(16, tex_width, tex_height, tex_depth, tex_data);
+
+
+    std::vector<double> pn_arr;
+	double res =0.0;
+	double min_res = pn.GetHeight(0.0, 0.0);
+	double max_res = pn.GetHeight(0.0, 0.0);
+	for (int x = tex_width; x > 0; x--){
+		for (int y = tex_height; y > 0; y--){
+			// One channel 3D noise in [0.0, 1.0] range.
+			res = pn.GetHeight(x, y);
+			pn_arr.push_back(res);
+			if(res < min_res)
+				min_res = res;
+			if(res > max_res)
+				max_res = res;
+		}
+    }
+
+	for (int i = 0; i < pn_arr.size(); i++){
+			*tex_data++ = (pn_arr[i]-min_res)/(max_res-min_res);
+			//std::cout << res;
+    }
+  }
+  else
+  {
+    // Random noise in range [0, 1]
+    for (int i = tex_width * tex_height/* * tex_depth*/;  i > 0; i--)
+    {
+      // One channel 3D noise in [0.0, 1.0] range.
+      *tex_data++ = rand_range(0.0f, 1.0f);
+    }
+  }
+  noiseBuffer->unmap(); 
+
+
+  // Noise texture sampler
+  TextureSampler noiseSampler = m_context->createTextureSampler();
+
+  noiseSampler->setWrapMode(0, RT_WRAP_REPEAT);
+  noiseSampler->setWrapMode(1, RT_WRAP_REPEAT);
+  noiseSampler->setFilteringModes(RT_FILTER_LINEAR, RT_FILTER_LINEAR, RT_FILTER_NONE);
+  noiseSampler->setIndexingMode(RT_TEXTURE_INDEX_NORMALIZED_COORDINATES);
+  noiseSampler->setReadMode(RT_TEXTURE_READ_NORMALIZED_FLOAT);
+  noiseSampler->setMaxAnisotropy(1.0f);
+  noiseSampler->setMipLevelCount(1);
+  noiseSampler->setArraySize(1);
+  noiseSampler->setBuffer(0, 0, noiseBuffer);
+
+  m_context["noise_texture"]->setTextureSampler(noiseSampler);
+}
+
+void HeightfieldScene::getParallelogramVector(std::vector<GeometryInstance>& gis)
+{
+	// old code
+	RTsize nx, nz;
+	databuffer->getSize(nx, nz);
+
+	float3 min = make_float3(0.0,0.0,0.0);
+	float3 max = make_float3(1.0,1.0,1.0);
+	// If buffer is nx by nz, we have nx-1 by nz-1 cells;
+	float3 cellsize = (max - min) / (make_float3(static_cast<float>(nx-1), 1.0f, static_cast<float>(nz-1)));
+	cellsize.y = 1;
+	float3 inv_cellsize = make_float3(1)/cellsize;
+
+	// Create material
+	//Program phong_ch = m_context->createProgramFromPTXFile( ptxpath( "heightfield", "phong.cu" ), "closest_hit_radiance" );
+	//Program phong_ah = m_context->createProgramFromPTXFile( ptxpath( "heightfield", "phong.cu" ), "any_hit_shadow" );
+	Program phong_ch = m_context->createProgramFromPTXFile( ptxpath( "heightfield", "phong.cu" ), "noise_closest_hit_radiance" );
+	Material parallelogram_matl = m_context->createMaterial();
+	parallelogram_matl->setClosestHitProgram( 0, phong_ch );
+	//parallelogram_matl->setAnyHitProgram( 1, phong_ah );
+
+	parallelogram_matl["Ka"]->setFloat(6.0f, 0.3f, 0.1f);
+	parallelogram_matl["Kd"]->setFloat(0.1f, 0.7f, 0.2f);
+	parallelogram_matl["Ks"]->setFloat(0.6f, 0.6f, 0.6f);
+	parallelogram_matl["phong_exp"]->setFloat(132);
+	parallelogram_matl["reflectivity"]->setFloat(0, 0, 0);
+
+	
+	Program pgram_intersect  = m_context->createProgramFromPTXFile( ptxpath( "heightfield", "heightfield.cu" ), "parallelogram_intersect" );
+	Program pgram_bounds     = m_context->createProgramFromPTXFile( ptxpath( "heightfield", "heightfield.cu" ), "parallelogram_bounds" );
+	float3 anchor;
+	float3 v2;
+	float3 v1;
+	std::vector<float3> anchor_arr;
+	std::vector<float3> v1_arr;
+	std::vector<float3> v2_arr;
+	anchor_arr.push_back(make_float3(0.0f + 1.0f, 0.00f, 0.0f));
+	/*
+	anchor_arr.push_back(make_float3(0.0f + 1.0f, 0.00f, 0.0f));
+	//anchor_arr.push_back(make_float3(0.0f + 1.0f, 0.00f, 0.0f));
+	anchor_arr.push_back(make_float3(0.0f + 2.0f, 0.00f+1.0f, 0.0f+1.0f));
+	anchor_arr.push_back(make_float3(0.0f + 2.0f, 0.00f+1.0f, 0.0f+1.0f));
+	//anchor_arr.push_back(make_float3(0.0f + 2.0f, 0.00f+1.0f, 0.0f+1.0f));
+    */
+	v1_arr.push_back(make_float3( 0.0f, 1.0f, 0.0f));
+	//v1_arr.push_back(make_float3( 1.0f, 0.0f, 0.0f));
+	//v1_arr.push_back(make_float3( 1.0f, 0.0f, 0.0f));
+    /*
+	
+    v1_arr.push_back(make_float3( -1.0f, 0.0f, 0.0f));
+	v1_arr.push_back(make_float3( 0.0f, -1.0f, 0.0f));
+    //v1_arr.push_back(make_float3( -1.0f, 0.0f, -0.0f));
+    */
+	v2_arr.push_back(make_float3( 0.0f, 0.0f, 1.0f));
+	//v2_arr.push_back(make_float3( 0.0f, 1.0f, 0.0f));
+	//v2_arr.push_back(make_float3( 0.0f, 0.0f, 1.0f));
+    /*
+	
+    v2_arr.push_back(make_float3( 0.0f, 0.0f, -1.0f));
+	v2_arr.push_back(make_float3( 0.0f, 0.0f, -1.0f));
+    //v2_arr.push_back(make_float3( 0.0f, -1.0f, 0.0f));
+    */
+	for( unsigned int i = 0u; i < v1_arr.size() ; i++ ) {
+		Geometry parallelogram = m_context->createGeometry();
+		parallelogram->setPrimitiveCount( 1u );
+		parallelogram->setBoundingBoxProgram( pgram_bounds );
+		parallelogram->setIntersectionProgram( pgram_intersect ); 
+		
+		anchor = anchor_arr[i];
+		//float3 anchor = make_float3(-1.0f, 0.00f, 1.0f);
+		v1 = v1_arr[i];
+		v2 = v2_arr[i];
+		
+		float3 normal = cross( v1, v2 );
+		normal = normalize( normal );
+		float d = dot( normal, anchor );
+		v1 *= 1.0f/dot( v1, v1 );
+		v2 *= 1.0f/dot( v2, v2 );
+		float4 plane = make_float4( normal, d );
+		parallelogram["plane"]->setFloat( plane );
+		parallelogram["v1"]->setFloat( v1 );
+		parallelogram["v2"]->setFloat( v2 );
+		parallelogram["anchor"]->setFloat( anchor );
+
+		parallelogram["boxmin"]->setFloat(min);
+		parallelogram["boxmax"]->setFloat(max);
+		parallelogram["cellsize"]->setFloat(cellsize);
+		parallelogram["inv_cellsize"]->setFloat(inv_cellsize);
+		parallelogram["data"]->setBuffer(databuffer);
+
+		gis.push_back( m_context->createGeometryInstance( parallelogram, &parallelogram_matl, &parallelogram_matl +1 ) );
+	}
+	
+}
+
+GeometryInstance HeightfieldScene::getGeo(float3 min, float3 max, bool bTest)
 {
   Geometry heightfield = m_context->createGeometry();
   heightfield->setPrimitiveCount( 1u );
 
   heightfield->setBoundingBoxProgram( m_context->createProgramFromPTXFile( ptxpath( "heightfield", "heightfield.cu" ), "bounds" ) );
-  heightfield->setIntersectionProgram( m_context->createProgramFromPTXFile( ptxpath( "heightfield", "heightfield.cu" ), "intersect" ) );
-  float3 min = make_float3(-2, ymin, -2);
-  float3 max = make_float3( 2, ymax,  2);
+  if(bTest)
+	 heightfield->setIntersectionProgram( m_context->createProgramFromPTXFile( ptxpath( "heightfield", "heightfield.cu" ), "intersect_test" ) );
+  else
+     heightfield->setIntersectionProgram( m_context->createProgramFromPTXFile( ptxpath( "heightfield", "heightfield.cu" ), "intersect" ) );
+  //float3 min = make_float3(-2, ymin, -2);
+  //float3 max = make_float3( 2, ymax,  2);
   RTsize nx, nz;
   databuffer->getSize(nx, nz);
   
@@ -249,12 +487,66 @@ void HeightfieldScene::createGeometry()
   heightfield_matl["reflectivity"]->setFloat(0, 0, 0);
 
   GeometryInstance gi = m_context->createGeometryInstance( heightfield, &heightfield_matl, &heightfield_matl+1 );
+  return gi;  
+}
+
+void HeightfieldScene::createGeometry()
+{
+  Geometry sphere = m_context->createGeometry();
+  sphere->setPrimitiveCount( 1u );
+  std::string ptx_path = ptxpath( "heightfield", "heightfield.cu" );
+  //Program sphere_bounding_box = m_context->createProgramFromPTXFile( ptx_path, "bounds_atmosphere" );
+  //Program sphere_intersection = m_context->createProgramFromPTXFile( ptx_path, "intersect_atmosphere" );
+  Program sphere_bounding_box    = m_context->createProgramFromPTXFile( ptxpath( "heightfield", "heightfield.cu" ), "sphere_bounds" );
+  Program sphere_intersection = m_context->createProgramFromPTXFile( ptxpath( "heightfield", "heightfield.cu" ), "sphere_intersect" );
+  sphere->setIntersectionProgram( sphere_intersection );
+  sphere->setBoundingBoxProgram( sphere_bounding_box );
+	
   
+  // Create material
+  float radiusT = 2.0;
+  sphere["sphere"]->setFloat( 0.0f, -2.0f, 0.0f, radiusT);
+  Program phong_ch = m_context->createProgramFromPTXFile( ptxpath( "heightfield", "phong.cu" ), "closest_hit_radiance" );
+  //Program phong_ah = m_context->createProgramFromPTXFile( ptxpath( "heightfield", "phong.cu" ), "any_hit_shadow" );
+  Material sphere_matl = m_context->createMaterial();
+  sphere_matl["Ka"]->setFloat(0.0f, 0.3f, 0.1f);
+  sphere_matl["Kd"]->setFloat(0.1f, 0.7f, 0.2f);
+  sphere_matl["Ks"]->setFloat(0.6f, 0.6f, 0.6f);
+  sphere_matl["phong_exp"]->setFloat(132);
+  sphere_matl["reflectivity"]->setFloat(0, 0, 0);
+  sphere_matl->setClosestHitProgram( 0, phong_ch );
+  //sphere_matl->setAnyHitProgram( 1, phong_ah );
+
+  GeometryInstance gi_sphere = m_context->createGeometryInstance();
+
+  gi_sphere->setGeometry( sphere );
+  gi_sphere->setMaterialCount( 1 );
+  gi_sphere->setMaterial( 0, sphere_matl );
+  
+  
+  float3 min = make_float3(-2, ymin, -2);
+  float3 max = make_float3( 2, ymax,  2);
+  GeometryInstance gi = getGeo(min, max, false);
   GeometryGroup geometrygroup = m_context->createGeometryGroup();
-  geometrygroup->setChildCount( 1 );
+  geometrygroup->setChildCount( static_cast<unsigned int>(1));
   geometrygroup->setChild( 0, gi );
-  geometrygroup->setAcceleration( m_context->createAcceleration("NoAccel","NoAccel") );
+  /*
+  geometrygroup->setChild( 1, gi_sphere );
+  */
+
+  /*
+  std::vector<GeometryInstance> gis;
+  getParallelogramVector(gis);
+  GeometryGroup geometrygroup = m_context->createGeometryGroup();
   
+  geometrygroup->setChildCount( static_cast<unsigned int>(gis.size()));
+  //geometrygroup->setChild( 0, gi_sphere );
+  for( unsigned int i = 0; i < gis.size(); ++i ) {
+    geometrygroup->setChild( i, gis[i] );
+  }
+*/
+  geometrygroup->setAcceleration( m_context->createAcceleration("NoAccel","NoAccel") );
+  //setupNoiseTexture();
   m_context["top_object"]->set( geometrygroup );
   m_context["top_shadower"]->set( geometrygroup );
 }
@@ -270,6 +562,8 @@ void HeightfieldScene::createData()
     fillBuffer(plane2, m_context, databuffer, 10, 10);
   } else if(dataname == "sinc"){
     fillBuffer(sinc, m_context, databuffer, 500, 500);
+  } else if(dataname == "perlin"){
+    fillBufferPerlin(m_context, databuffer, 1200, 1200);
   } else {
     // Try to open as a file
     std::ifstream in(dataname.c_str(), std::ios::binary);
@@ -340,7 +634,7 @@ int main( int argc, char** argv )
   GLUTDisplay::init( argc, argv );
 
   // Process command line options
-  std::string dataset( "sinxy" );
+  std::string dataset( "perlin" );
   for ( int i = 1; i < argc; ++i ) {
     std::string arg( argv[i] );
     if ( arg == "--help" || arg == "-h" ) {

@@ -34,6 +34,15 @@ rtDeclareVariable(float,        phong_exp, , );
 rtDeclareVariable(float3, geometric_normal, attribute geometric_normal, ); 
 rtDeclareVariable(float3, shading_normal, attribute shading_normal, ); 
 
+rtDeclareVariable(PerRayData_radiance, prd_radiance, rtPayload, );
+// Textures
+rtTextureSampler<float,  2> noise_texture;
+
+// 3D solid noise texture, values in range [0, 1].
+static __device__ __inline__ float Noise1f(float3 p)
+{
+  return tex2D(noise_texture, p.y, p.z);
+}
 
 RT_PROGRAM void any_hit_shadow()
 {
@@ -49,3 +58,18 @@ RT_PROGRAM void closest_hit_radiance()
   float3 ffnormal = faceforward( world_shading_normal, -ray.direction, world_geometric_normal );
   phongShade( Kd, Ka, Ks, ffnormal, phong_exp, reflectivity );
 }
+
+//
+// Returns a solid color as the shading result 
+// 
+RT_PROGRAM void noise_closest_hit_radiance()
+{
+  float3 hitpoint = ray.origin + t_hit * ray.direction;
+  float3 world_shading_normal   = normalize( rtTransformNormal( RT_OBJECT_TO_WORLD, shading_normal ) );
+  float3 world_geometric_normal = normalize( rtTransformNormal( RT_OBJECT_TO_WORLD, geometric_normal ) );
+
+  float3 ffnormal = faceforward( world_shading_normal, -ray.direction, world_geometric_normal );
+  phongShade( Kd, Ka, Ks, ffnormal, phong_exp, reflectivity ); 
+  //prd.result = Noise1f(hitpoint)*make_float3(0.3,0.3,0.3);
+}
+
