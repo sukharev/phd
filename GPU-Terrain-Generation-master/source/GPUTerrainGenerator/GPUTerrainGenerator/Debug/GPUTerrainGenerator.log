@@ -1,0 +1,18 @@
+﻿Build started 3/7/2014 3:12:00 AM.
+     1>Project "C:\SVN\Dev\GPU-Terrain-Generation-master\source\GPUTerrainGenerator\GPUTerrainGenerator\GPUTerrainGenerator.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\GPUTerrainGenerator.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         All outputs are up-to-date.
+         All outputs are up-to-date.
+       Link:
+         All outputs are up-to-date.
+         GPUTerrainGenerator.vcxproj -> C:\SVN\Dev\GPU-Terrain-Generation-master\source\GPUTerrainGenerator\Debug\GPUTerrainGenerator.exe
+       FinalizeBuildStatus:
+         Deleting file "Debug\GPUTerrainGenerator.unsuccessfulbuild".
+         Touching "Debug\GPUTerrainGenerator.lastbuildstate".
+     1>Done Building Project "C:\SVN\Dev\GPU-Terrain-Generation-master\source\GPUTerrainGenerator\GPUTerrainGenerator\GPUTerrainGenerator.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.17

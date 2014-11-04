@@ -1,0 +1,46 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: GLCloud2 - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\Sean\LOCALS~1\Temp\RSP28.tmp" with contents
+[
+/nologo /MD /W3 /GX /O2 /I "..\include" /I "..\EngineCore" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"Release/GLCloud2.pch" /Yu"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\BSD\Sandbox\GLCloud2\CloudSphere.cpp"
+"D:\BSD\Sandbox\GLCloud2\GLCloud2.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Sean\LOCALS~1\Temp\RSP28.tmp" 
+Creating temporary file "C:\DOCUME~1\Sean\LOCALS~1\Temp\RSP29.tmp" with contents
+[
+/nologo /MD /W3 /GX /O2 /I "..\include" /I "..\EngineCore" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"Release/GLCloud2.pch" /Yc"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\BSD\Sandbox\GLCloud2\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Sean\LOCALS~1\Temp\RSP29.tmp" 
+Creating temporary file "C:\DOCUME~1\Sean\LOCALS~1\Temp\RSP2A.tmp" with contents
+[
+winmm.lib opengl32.lib glu32.lib glew32.lib zlib.lib libpng.lib sdl.lib sdlmain.lib /nologo /subsystem:windows /incremental:no /pdb:"..\Release/GLCloud2.pdb" /machine:I386 /out:"..\Release/GLCloud2.exe" /libpath:"..\lib" 
+.\Release\CloudSphere.obj
+.\Release\GLCloud2.obj
+.\Release\StdAfx.obj
+\BSD\Sandbox\Release\EngineCore.lib
+]
+Creating command line "link.exe @C:\DOCUME~1\Sean\LOCALS~1\Temp\RSP2A.tmp"
+<h3>Output Window</h3>
+Compiling...
+StdAfx.cpp
+Compiling...
+CloudSphere.cpp
+GLCloud2.cpp
+Generating Code...
+Linking...
+
+
+
+<h3>Results</h3>
+GLCloud2.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

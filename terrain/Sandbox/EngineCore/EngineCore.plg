@@ -1,0 +1,31 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: EngineCore - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\Sean\LOCALS~1\Temp\RSP23.tmp" with contents
+[
+/nologo /G5 /Zp4 /MD /W3 /GX /Zi /O2 /I "..\include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"Release/" /Fp"Release/EngineCore.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\BSD\Sandbox\EngineCore\Noise.cpp"
+"D:\BSD\Sandbox\EngineCore\PixelBuffer.cpp"
+"D:\BSD\Sandbox\EngineCore\Texture.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Sean\LOCALS~1\Temp\RSP23.tmp" 
+Creating command line "link.exe -lib /nologo /out:"..\Release\EngineCore.lib"  .\Release\Noise.obj .\Release\PixelBuffer.obj .\Release\Texture.obj "
+<h3>Output Window</h3>
+Compiling...
+Noise.cpp
+PixelBuffer.cpp
+Texture.cpp
+Creating library...
+
+
+
+<h3>Results</h3>
+EngineCore.lib - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

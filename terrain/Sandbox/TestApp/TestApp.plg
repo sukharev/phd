@@ -1,0 +1,42 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: TestApp - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\Sean\LOCALS~1\Temp\RSP40.tmp" with contents
+[
+/nologo /G5 /Zp4 /MD /W3 /GX /Zi /O2 /I "..\include" /I "..\EngineCore" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /FR"Release/" /Fp"Release/TestApp.pch" /Yu"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\BSD\Sandbox\TestApp\TestApp.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Sean\LOCALS~1\Temp\RSP40.tmp" 
+Creating temporary file "C:\DOCUME~1\Sean\LOCALS~1\Temp\RSP41.tmp" with contents
+[
+/nologo /G5 /Zp4 /MD /W3 /GX /Zi /O2 /I "..\include" /I "..\EngineCore" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /FR"Release/" /Fp"Release/TestApp.pch" /Yc"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\BSD\Sandbox\TestApp\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Sean\LOCALS~1\Temp\RSP41.tmp" 
+Creating temporary file "C:\DOCUME~1\Sean\LOCALS~1\Temp\RSP42.tmp" with contents
+[
+winmm.lib opengl32.lib glu32.lib glew32.lib zlib.lib libpng.lib sdl.lib sdlmain.lib /nologo /subsystem:windows /incremental:no /pdb:"..\Release/TestApp.pdb" /machine:I386 /out:"..\Release/TestApp.exe" /libpath:"..\lib" 
+.\Release\StdAfx.obj
+.\Release\TestApp.obj
+\BSD\Sandbox\Release\EngineCore.lib
+]
+Creating command line "link.exe @C:\DOCUME~1\Sean\LOCALS~1\Temp\RSP42.tmp"
+<h3>Output Window</h3>
+Compiling...
+StdAfx.cpp
+Compiling...
+TestApp.cpp
+Linking...
+
+
+
+<h3>Results</h3>
+TestApp.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
